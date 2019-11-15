@@ -71,6 +71,21 @@ import java.util.List;
 @ReconnectOn(exceptions = OAuthTokenExpiredException.class)
 public class GoogleSpreadSheetConnector extends AbstractGoogleOAuthConnector {
 	
+	/**
+     * The Value ZeRo(o).
+     */
+	private final String ZERO="0";
+	
+	/**
+     * The Value One(1).
+     */
+	private final String ONE="1";
+	
+	/**
+     * The Value Comma(,)
+     */
+	private final String COMMA=",";
+	
 	private static Logger logger = Logger.getLogger(GoogleSpreadSheetConnector.class);
 	
 	/**
@@ -182,7 +197,7 @@ public class GoogleSpreadSheetConnector extends AbstractGoogleOAuthConnector {
      */
     @Processor
     @OAuthProtected
-    public List<Worksheet> getAllWorksheets(String spreadsheet, @Default("0") int spreadsheetIndex) throws IOException, ServiceException {
+    public List<Worksheet> getAllWorksheets(String spreadsheet, @Default(ZERO) int spreadsheetIndex) throws IOException, ServiceException {
 
         SpreadsheetEntry ss = this.getSpreadsheetEntry(spreadsheet, spreadsheetIndex);
     	return ModelParser.parseWorksheet(ss.getWorksheets());
@@ -208,7 +223,7 @@ public class GoogleSpreadSheetConnector extends AbstractGoogleOAuthConnector {
     @OAuthProtected
     public Worksheet createWorksheet(
 			String spreadsheet,
-            @Default("0") int spreadsheetIndex,
+            @Default(ZERO) int spreadsheetIndex,
             String title,
     		int rowCount,
     		int colCount) throws IOException, ServiceException {
@@ -246,8 +261,8 @@ public class GoogleSpreadSheetConnector extends AbstractGoogleOAuthConnector {
     public void deleteWorksheet(
 					String spreadsheet,
 		    		String worksheet,
-                    @Default("0") int spreadsheetIndex,
-                    @Default("0") int worksheetIndex) throws IOException, ServiceException {
+                    @Default(ZERO) int spreadsheetIndex,
+                    @Default(ZERO) int worksheetIndex) throws IOException, ServiceException {
 
         WorksheetEntry ws = this.getItem(this.getWorksheetEntriesByTitle(spreadsheet, worksheet, spreadsheetIndex), worksheetIndex);
     	ws.delete();
@@ -286,10 +301,10 @@ public class GoogleSpreadSheetConnector extends AbstractGoogleOAuthConnector {
             @Optional Boolean draft,
     		@Optional Boolean canEdit,
             @Default("") String summary,
-            @Default("0") int rowCount,
-            @Default("0") int colCount,
-            @Default("0") int spreadsheetIndex,
-            @Default("0") int worksheetIndex) throws IOException, ServiceException {
+            @Default(ZERO) int rowCount,
+            @Default(ZERO) int colCount,
+            @Default(ZERO) int spreadsheetIndex,
+            @Default(ZERO) int worksheetIndex) throws IOException, ServiceException {
 
         WorksheetEntry ws = this.getWorksheetEntry(accessToken, spreadsheet, worksheet, spreadsheetIndex, worksheetIndex);
 		
@@ -345,8 +360,8 @@ public class GoogleSpreadSheetConnector extends AbstractGoogleOAuthConnector {
             @Default("#[payload]") List<Row> rows,
             String spreadsheet,
     		String worksheet,
-            @Default("0") int spreadsheetIndex,
-            @Default("0") int worksheetIndex,
+            @Default(ZERO) int spreadsheetIndex,
+            @Default(ZERO) int worksheetIndex,
             @Default("false") boolean purge) throws Exception {
 
         if (rows == null || rows.isEmpty()) {
@@ -411,12 +426,12 @@ public class GoogleSpreadSheetConnector extends AbstractGoogleOAuthConnector {
 			String spreadsheet,
     		String worksheet,
             @Default("#[payload]") String csv,
-            @Default("1") int startingRow,
-            @Default("1") int startingColumn,
+            @Default(ONE) int startingRow,
+            @Default(ONE) int startingColumn,
             @Default("\n") String lineSeparator,
-            @Default(",") String columnSeparator,
-            @Default("0") int spreadsheetIndex,
-            @Default("0") int worksheetIndex,
+            @Default(COMMA) String columnSeparator,
+            @Default(ZERO) int spreadsheetIndex,
+            @Default(ZERO) int worksheetIndex,
             @Default("false") boolean purge) throws Exception {
 
         if (StringUtils.isEmpty(csv)) {
@@ -430,8 +445,8 @@ public class GoogleSpreadSheetConnector extends AbstractGoogleOAuthConnector {
     		lineSeparator = "\n";
     	}
     	
-    	if (StringUtils.isEmpty(",")) {
-    		columnSeparator = ",";
+    	if (StringUtils.isEmpty(COMMA)) {
+    		columnSeparator = COMMA;
     	}
     	
     	List<Row> rows = CsvToRowsAdapter.adapt(csv, startingRow, startingColumn, columnSeparator, lineSeparator);
@@ -454,7 +469,7 @@ public class GoogleSpreadSheetConnector extends AbstractGoogleOAuthConnector {
      */
     @Processor
     @OAuthProtected
-    public List<Person> getAuthors(String spreadsheet, @Default("0") int spreadsheetIndex) throws IOException, ServiceException {
+    public List<Person> getAuthors(String spreadsheet, @Default(ZERO) int spreadsheetIndex) throws IOException, ServiceException {
     	
     	return this.getSpreadsheetEntry(spreadsheet, spreadsheetIndex).getAuthors();
     }
@@ -482,8 +497,8 @@ public class GoogleSpreadSheetConnector extends AbstractGoogleOAuthConnector {
     public Row getColumnHeaders(
 			String spreadsheet,
     		String worksheet,
-            @Default("0") int spreadsheetIndex,
-            @Default("0") int worksheetIndex) throws IOException, ServiceException {
+            @Default(ZERO) int spreadsheetIndex,
+            @Default(ZERO) int worksheetIndex) throws IOException, ServiceException {
 
 
         WorksheetEntry worksheetEntry = this.getWorksheetEntry(accessToken, spreadsheet, worksheet, spreadsheetIndex, worksheetIndex);
@@ -543,7 +558,7 @@ public class GoogleSpreadSheetConnector extends AbstractGoogleOAuthConnector {
     public List<Worksheet> getWorksheetByTitle(
     							String spreadsheet,
     				    		String title,
-                                @Default("0") int spreadsheetIndex) throws IOException, ServiceException {
+                                @Default(ZERO) int spreadsheetIndex) throws IOException, ServiceException {
 
         return ModelParser.parseWorksheet(this.getWorksheetEntriesByTitle(spreadsheet, title, spreadsheetIndex));
     }
@@ -569,8 +584,8 @@ public class GoogleSpreadSheetConnector extends AbstractGoogleOAuthConnector {
     public void purgeWorksheet(
 			String spreadsheet,
     		String worksheet,
-            @Default("0") int spreadsheetIndex,
-            @Default("0") int worksheetIndex) throws IOException, ServiceException {
+            @Default(ZERO) int spreadsheetIndex,
+            @Default(ZERO) int worksheetIndex) throws IOException, ServiceException {
 
         WorksheetEntry worksheetEntry = this.getWorksheetEntry(accessToken, spreadsheet, worksheet, spreadsheetIndex, worksheetIndex);
     	
@@ -604,8 +619,8 @@ public class GoogleSpreadSheetConnector extends AbstractGoogleOAuthConnector {
     public List<Row> getAllCells(
 			String spreadsheet,
     		String worksheet,
-            @Default("0") int spreadsheetIndex,
-            @Default("0") int worksheetIndex) throws IOException, ServiceException {
+            @Default(ZERO) int spreadsheetIndex,
+            @Default(ZERO) int worksheetIndex) throws IOException, ServiceException {
 
         WorksheetEntry worksheetEntry = this.getWorksheetEntry(accessToken, spreadsheet, worksheet, spreadsheetIndex, worksheetIndex);
 
@@ -645,17 +660,17 @@ public class GoogleSpreadSheetConnector extends AbstractGoogleOAuthConnector {
     public String getAllCellsAsCsv(
 			String spreadsheet,
     		String worksheet,
-            @Default(",") String columnSeparator,
+            @Default(COMMA) String columnSeparator,
             @Default("\n") String lineSeparator,
-            @Default("0") int spreadsheetIndex,
-            @Default("0") int worksheetIndex) throws IOException, ServiceException {
+            @Default(ZERO) int spreadsheetIndex,
+            @Default(ZERO) int worksheetIndex) throws IOException, ServiceException {
 
         if (StringUtils.isEmpty(lineSeparator)) {
     		lineSeparator = "\n";
     	}
     	
-    	if (StringUtils.isEmpty(",")) {
-    		columnSeparator = ",";
+    	if (StringUtils.isEmpty(COMMA)) {
+    		columnSeparator = COMMA;
     	}
     	
     	return ModelParser.toCSV(this.getAllCells(spreadsheet, worksheet, spreadsheetIndex, worksheetIndex),
@@ -689,8 +704,8 @@ public class GoogleSpreadSheetConnector extends AbstractGoogleOAuthConnector {
     public List<Row> getCellRange(
 			String spreadsheet,
 			String worksheet,
-            @Default("0") int spreadsheetIndex,
-            @Default("0") int worksheetIndex,
+            @Default(ZERO) int spreadsheetIndex,
+            @Default(ZERO) int worksheetIndex,
             @Optional Integer minRow,
     		@Optional Integer maxRow,
     		@Optional Integer minCol,
@@ -740,9 +755,9 @@ public class GoogleSpreadSheetConnector extends AbstractGoogleOAuthConnector {
     public String getCellRangeAsCsv(
 			String spreadsheet,
 			String worksheet,
-            @Default("0") int spreadsheetIndex,
-            @Default("0") int worksheetIndex,
-            @Default(",") String columnSeparator,
+            @Default(ZERO) int spreadsheetIndex,
+            @Default(ZERO) int worksheetIndex,
+            @Default(COMMA) String columnSeparator,
             @Default("\n") String lineSeparator,
             @Optional Integer minRow,
 			@Optional Integer maxRow,
@@ -753,8 +768,8 @@ public class GoogleSpreadSheetConnector extends AbstractGoogleOAuthConnector {
     		lineSeparator = "\n";
     	}
     	
-    	if (StringUtils.isEmpty(",")) {
-    		columnSeparator = ",";
+    	if (StringUtils.isEmpty(COMMA)) {
+    		columnSeparator = COMMA;
     	}
     	
     	List<Row> rows = this.getCellRange(spreadsheet, worksheet, 
@@ -788,8 +803,8 @@ public class GoogleSpreadSheetConnector extends AbstractGoogleOAuthConnector {
 			String spreadsheet,
     		String worksheet,
     		String query,
-            @Default("0") int spreadsheetIndex,
-            @Default("0") int worksheetIndex) throws IOException, ServiceException {
+            @Default(ZERO) int spreadsheetIndex,
+            @Default(ZERO) int worksheetIndex) throws IOException, ServiceException {
 
         CellQuery cellQuery = new CellQuery(this.getCellFeedUrl(spreadsheet, worksheet, spreadsheetIndex, worksheetIndex));
       cellQuery.setFullTextQuery(query);
