@@ -20,6 +20,8 @@ import org.mule.modules.tests.ConnectorTestUtils;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 
 public class CreateWorksheetTestCases extends GoogleSpreadsheetsTestParent {
@@ -42,10 +44,11 @@ public class CreateWorksheetTestCases extends GoogleSpreadsheetsTestParent {
             worksheetTitle = getTestRunMessageValue("worksheet");
 
             Worksheet worksheet = runFlowAndGetPayload("create-worksheet");
-            assertTrue(worksheet != null);
+            assertNotNull(worksheet);
             assertTrue(worksheet.getName().equals(worksheetTitle));
-            assertTrue(worksheet.getRowCount() == (Integer)getTestRunMessageValue("rowCount"));
-            assertTrue(worksheet.getColCount() == (Integer)getTestRunMessageValue("colCount"));
+            assertEquals(worksheet.getRowCount(),getTestRunMessageValue("rowCount"));
+            assertEquals(worksheet.getColCount(),getTestRunMessageValue("colCount"));
+            
         } catch (Exception e) {
             fail(ConnectorTestUtils.getStackTrace(e));
         }
